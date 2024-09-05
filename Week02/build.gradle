@@ -1,0 +1,55 @@
+plugins {
+    id 'java'
+    id 'war'
+}
+
+group 'vn.edu.iuh.fit'
+version '1.0-SNAPSHOT'
+
+repositories {
+    mavenCentral()
+}
+
+ext {
+    junitVersion = '5.9.2'
+}
+
+sourceCompatibility = '11'
+targetCompatibility = '11'
+
+tasks.withType(JavaCompile) {
+    options.encoding = 'UTF-8'
+}
+
+dependencies {
+    compileOnly('jakarta.platform:jakarta.jakartaee-web-api:9.1.0')
+    implementation('org.hibernate:hibernate-core:6.0.2.Final')
+    implementation('org.glassfish.jaxb:jaxb-runtime:3.0.2')
+    implementation('org.glassfish.tyrus.bundles:tyrus-standalone-client:2.0.2')
+    implementation('org.jboss.weld.se:weld-se-core:4.0.3.Final')
+
+    // Apache Commons FileUpload
+    implementation 'commons-fileupload:commons-fileupload:1.2.2'
+
+    // Apache Commons IO
+    implementation 'commons-io:commons-io:2.3'
+    // Jakarta Servlet API
+    implementation 'jakarta.servlet:jakarta.servlet-api:5.0.0'
+
+    implementation 'org.mariadb.jdbc:mariadb-java-client:3.2.0'
+
+    implementation 'org.slf4j:slf4j-simple:1.7.36'
+
+    //cau 8
+    implementation 'com.sun.mail:javax.mail:1.6.2'
+    implementation 'javax.activation:javax.activation-api:1.2.0'
+
+
+
+    testImplementation("org.junit.jupiter:junit-jupiter-api:${junitVersion}")
+    testRuntimeOnly("org.junit.jupiter:junit-jupiter-engine:${junitVersion}")
+}
+
+test {
+    useJUnitPlatform()
+}
