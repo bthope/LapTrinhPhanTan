@@ -1,0 +1,137 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Hệ Thống Quản Lý Đề Tài</title>
+    <link href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" rel="stylesheet">
+</head>
+<body>
+<header class="bg-primary text-white text-center py-4">
+    <h1>Hệ Thống Quản Lý Đề Tài</h1>
+</header>
+
+<nav class="navbar navbar-expand-lg navbar-light bg-light">
+    <a class="navbar-brand" href="#">Quản Lý Đề Tài</a>
+    <div class="collapse navbar-collapse" id="navbarNav">
+        <ul class="navbar-nav">
+            <li class="nav-item">
+                <a class="nav-link" href="DeTai.html" id="danhSachDeTai">Danh sách đề tài</a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link" href="AddDeTai.html" id="themDeTai">Thêm danh sách đề tài</a>
+            </li>
+        </ul>
+    </div>
+</nav>
+
+<div class="container mt-4">
+    <h2>Danh sách đề tài</h2>
+
+    <div class="form-group">
+        <label for="searchInput">Tìm kiếm:</label>
+        <input type="text" class="form-control" id="searchInput" placeholder="Nhập tên hoặc mã đề tài...">
+    </div>
+
+    <table class="table table-bordered">
+        <thead>
+        <tr>
+            <th>Mã Đề Tài</th>
+            <th>Tên Đề Tài</th>
+            <th>Năm</th>
+            <th>Mô Tả Đề Tài</th>
+            <th>URL Hình</th>
+            <th>Mã Giảng Viên</th>
+            <th>Hành Động</th>
+            <th>Update</th>
+        </tr>
+        </thead>
+        <tbody id="deTaiTableBody" class="text-center">
+        <!-- Dữ liệu đề tài sẽ được chèn vào đây qua JavaScript -->
+        </tbody>
+    </table>
+</div>
+
+<footer class="bg-light text-center py-4 mt-4">
+    <p>Lê Hữu Bằng - 20049601 - DHKTPM16A</p>
+</footer>
+
+<script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.0.7/dist/umd/popper.min.js"></script>
+<script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+<script>
+    // Hàm để lấy danh sách đề tài từ API và hiển thị
+    function fetchDeTai() {
+        fetch('http://localhost:8080/api/v1/detai')
+            .then(response => response.json())
+            .then(data => {
+                renderTable(data); // Gọi hàm renderTable với dữ liệu lấy được
+            })
+            .catch(error => console.error('Error fetching data:', error));
+    }
+
+    // Hàm để hiển thị dữ liệu trong bảng
+    function renderTable(data) {
+        const tableBody = document.getElementById('deTaiTableBody');
+        tableBody.innerHTML = ''; // Xóa nội dung cũ
+        data.forEach(deTai => {
+            const row = `<tr>
+                <td>${deTai.maDeTai}</td>
+                <td>${deTai.tenDeTai}</td>
+                <td>${deTai.nam}</td>
+                <td>${deTai.moTaDeTai}</td>
+                <td><img src="${deTai.urlHinh}" alt="${deTai.tenDeTai}" style="width: 100px;"></td>
+                <td>${deTai.giangVien.maGV}</td>
+                <td>
+                    <button class="btn btn-danger" onclick="deleteDeTai(${deTai.maDeTai})">Xóa</button>
+                </td>
+                <td>
+                <button class="btn btn-warning" onclick="openUpdatePage(${deTai.maDeTai})">Cập nhật</button>
+                </td>
+            </tr>`;
+            tableBody.innerHTML += row;
+        });
+    }
+
+    // Hàm xóa đề tài
+    function deleteDeTai(maDeTai) {
+        if (confirm('Bạn có chắc chắn muốn xóa đề tài này?')) {
+            fetch(`http://localhost:8080/api/v1/detai/${maDeTai}`, {
+                method: 'DELETE'
+            })
+                .then(response => {
+                    if (response.ok) {
+                        alert('Đề tài đã được xóa thành công!');
+                        fetchDeTai(); // Tải lại danh sách đề tài
+                    } else {
+                        alert('Đã xảy ra lỗi khi xóa đề tài.');
+                    }
+                })
+                .catch(error => console.error('Lỗi khi xóa đề tài:', error));
+        }
+    }
+    function openUpdatePage(maDeTai) {
+        window.location.href = `UpdateDeTai.html?maDeTai=${maDeTai}`;
+    }
+
+
+    // Hàm tìm kiếm đề tài
+    document.getElementById('searchInput').addEventListener('input', function() {
+        const searchTerm = this.value.toLowerCase();
+        fetch('http://localhost:8080/api/v1/detai')
+            .then(response => response.json())
+            .then(data => {
+                const filteredData = data.filter(deTai =>
+                    deTai.tenDeTai.toLowerCase().includes(searchTerm) ||
+                    deTai.maDeTai.toString().includes(searchTerm)
+                );
+                renderTable(filteredData); // Hiển thị danh sách đã lọc
+            })
+            .catch(error => console.error('Error fetching data:', error));
+    });
+
+    // Gọi hàm fetchDeTai khi tải trang
+    window.onload = fetchDeTai;
+</script>
+</body>
+</html>

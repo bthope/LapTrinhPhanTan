@@ -1,0 +1,80 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Cập nhật Đề Tài</title>
+    <link href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" rel="stylesheet">
+</head>
+<body>
+<div class="container mt-4">
+    <h2>Cập nhật Đề Tài</h2>
+    <form id="updateForm">
+        <div class="form-group">
+            <label for="tenDeTai">Tên Đề Tài</label>
+            <input type="text" class="form-control" id="tenDeTai" required>
+        </div>
+        <div class="form-group">
+            <label for="nam">Năm</label>
+            <input type="number" class="form-control" id="nam" required>
+        </div>
+        <div class="form-group">
+            <label for="moTaDeTai">Mô Tả Đề Tài</label>
+            <input type="text" class="form-control" id="moTaDeTai" required>
+        </div>
+        <div class="form-group">
+            <label for="urlHinh">URL Hình</label>
+            <input type="url" class="form-control" id="urlHinh" required>
+        </div>
+        <button type="submit" class="btn btn-primary">Cập nhật</button>
+    </form>
+</div>
+
+<script>
+    // Lấy maDeTai từ URL
+    const urlParams = new URLSearchParams(window.location.search);
+    const maDeTai = urlParams.get('maDeTai');
+
+    // Lấy thông tin chi tiết của đề tài để điền vào form
+    fetch(`http://localhost:8080/api/v1/detai/${maDeTai}`)
+        .then(response => response.json())
+        .then(data => {
+            document.getElementById('tenDeTai').value = data.tenDeTai;
+            document.getElementById('nam').value = data.nam;
+            document.getElementById('moTaDeTai').value = data.moTaDeTai;
+            document.getElementById('urlHinh').value = data.urlHinh;
+        })
+        .catch(error => console.error('Error fetching data:', error));
+
+    // Xử lý khi người dùng bấm nút "Cập nhật"
+    document.getElementById('updateForm').addEventListener('submit', function(event) {
+        event.preventDefault(); // Ngăn form reload lại trang
+
+        const updatedData = {
+            tenDeTai: document.getElementById('tenDeTai').value,
+            nam: parseInt(document.getElementById('nam').value),
+            moTaDeTai: document.getElementById('moTaDeTai').value,
+            urlHinh: document.getElementById('urlHinh').value
+        };
+
+        // Gửi yêu cầu cập nhật đến API
+        fetch(`http://localhost:8080/api/v1/detai/update/${maDeTai}`, {
+            method: 'PUT',
+            headers: {
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify(updatedData)
+        })
+            .then(response => {
+                if (response.ok) {
+                    alert('Cập nhật đề tài thành công!');
+                    window.location.href = 'DeTai.html'; // Chuyển về trang danh sách đề tài
+                } else {
+                    alert('Đã xảy ra lỗi khi cập nhật đề tài.');
+                }
+            })
+            .catch(error => console.error('Error updating data:', error));
+    });
+</script>
+</body>
+</html>
