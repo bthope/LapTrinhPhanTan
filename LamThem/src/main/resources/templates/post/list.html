@@ -1,0 +1,51 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" lang="">
+<head>
+    <meta charset="UTF-8">
+    <title>Product List</title>
+</head>
+<body>
+    <h1>Product List</h1>
+    <div>
+        <form th:action="@{/post/search}" method="get">
+            <input type="text" name="search" th:value="${param.search}"  placeholder="Search by Id or keyword">
+            <button type="submit">Search</button>
+        </form>
+    </div>
+    <div>
+        <a th:href="@{/post/create}">Create</a>
+    </div>
+    <table>
+        <thead>
+            <tr>
+                <th>Id</th>
+                <th>Title</th>
+                <th>Content</th>
+                <th>Comment</th>
+                <th>Author</th>
+                <th></th>
+                <th></th>
+                <th></th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr th:each="post : ${post}">
+                <td th:text="${post.id}"></td>
+                <td th:text="${post.title}"></td>
+                <td th:text="${post.content}"></td>
+                <td th:text="${post.comment}"></td>
+                <td th:text="${post.author}"></td>
+                <td>
+                    <a th:href="@{/post/delete/{id}(id=${post.id})}">Delete</a>
+                </td>
+                <td>
+                    <a th:href="@{/post/update/{id}(id=${post.id})}">Update</a>
+                </td>
+                <td>
+                    <a th:href="@{/post/detail/{id}(id=${post.id})}">View</a>
+                </td>
+            </tr>
+        </tbody>
+    </table>
+</body>
+</html>

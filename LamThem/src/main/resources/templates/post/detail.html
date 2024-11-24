@@ -1,0 +1,30 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" lang="">
+<head>
+  <meta charset="UTF-8">
+  <title>Post Detail</title>
+</head>
+<body>
+<div>
+  <div>
+    <h1>Post Detail</h1>
+  </div>
+
+  <div>
+    <h2 th:text="${post.title}">Title</h2>
+    <div>
+      <p>ID: <span th:text="${post.id}"></span></p>
+      <p>Author: <span th:text="${post.author}"></span></p>
+    </div>
+    <div>
+      <p>Content: <span th:text="${post.content}"></span></p>
+    </div>
+    <div>
+      <p>Comments: <span th:text="${post.comment}"></span></p>
+    </div>
+  </div>
+
+  <a th:href="@{/post}">Back to List</a>
+</div>
+</body>
+</html>
