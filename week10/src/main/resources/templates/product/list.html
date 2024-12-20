@@ -1,0 +1,76 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <title>Product Management</title>
+</head>
+<body>
+<div>
+    <div>
+        <h1>Product Management</h1>
+        <a href="/products/add">Add New Product</a>
+    </div>
+
+    <div>
+        <div>
+            <form th:action="@{/products}" method="get">
+                <select name="categoryId" onchange="this.form.submit()">
+                    <option value="">All Categories</option>
+                    <option th:each="category : ${categories}"
+                            th:value="${category.cart_id}"
+                            th:text="${category.name}"
+                            th:selected="${category.cart_id == currentCategoryId}">
+                    </option>
+                </select>
+            </form>
+
+            <form th:action="@{/products/search}" method="get">
+                <input type="text"
+                       name="searchTerm"
+                       th:value="${searchTerm}"
+                       placeholder="Search by ID, Name, Code, Price, or Register Date (yyyy-MM-dd)">
+                <button type="submit">Search</button>
+            </form>
+        </div>
+
+        <table>
+            <thead>
+            <tr>
+                <th>Id</th>
+                <th>Code</th>
+                <th>Name</th>
+                <th>Category</th>
+                <th>Price</th>
+                <th>Register Date</th>
+                <th>Actions</th>
+            </tr>
+            </thead>
+            <tbody>
+            <tr th:each="product : ${products.content}">
+                <td th:text="${product.id}"></td>
+                <td th:text="${product.code}"></td>
+                <td th:text="${product.name}"></td>
+                <td th:text="${product.catergory.name}"></td>
+                <td th:text="${#numbers.formatCurrency(product.price)}"></td>
+                <td th:text="${#dates.format(product.registerDate, 'yyyy-MM-dd')}"></td>
+                <td>
+                    <a th:href="@{/products/edit/{id}(id=${product.id})}">Edit</a>
+                    <a th:href="@{/products/delete/{id}(id=${product.id})}"
+                       onclick="return confirm('Are you sure?')">Delete</a>
+                    <a th:href="@{/products/view/{id}(id=${product.id})}">View</a>
+                </td>
+            </tr>
+            </tbody>
+        </table>
+
+        <div th:if="${products.totalPages > 1}">
+            <div>
+                <a th:each="pageNumber : ${#numbers.sequence(0, products.totalPages - 1)}"
+                   th:href="@{/products(page=${pageNumber})}"
+                   th:text="${pageNumber + 1}">
+                </a>
+            </div>
+        </div>
+    </div>
+</div>
+</body>
+</html>

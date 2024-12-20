@@ -1,0 +1,43 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+  <title>View Product</title>
+</head>
+<body>
+<h3>Product Details</h3>
+
+<div>
+  <strong>Code:</strong>
+  <span th:text="${product.code}"></span>
+</div>
+
+<div>
+  <strong>Name:</strong>
+  <span th:text="${product.name}"></span>
+</div>
+
+<div>
+  <strong>Description:</strong>
+  <span th:text="${product.description}"></span>
+</div>
+
+<div>
+  <strong>Register Date:</strong>
+  <span th:text="${#dates.format(product.registerDate, 'yyyy-MM-dd')}"></span>
+</div>
+
+<div>
+  <strong>Price:</strong>
+  <span th:text="${#numbers.formatDecimal(product.price, 0, 'COMMA', 2, 'POINT')}"></span>
+</div>
+
+<div>
+  <strong>Category:</strong>
+  <span th:text="${product.catergory.name}"></span>
+</div>
+
+<div>
+  <a th:href="@{/products}">Back to List</a>
+</div>
+</body>
+</html>
